@@ -73,16 +73,16 @@ DURATION_STATS = OrderedDict(
      ])
 
 
-def agg_all_long_short(round_trips, col, stats_dict):
+def agg_all_long_short(round_trips, col, **kwargs):
     stats_all = (round_trips
                  .assign(ones=1)
                  .groupby('ones')[col]
-                 .agg(stats_dict)
+                 .agg(**kwargs)
                  .T
                  .rename(columns={1.0: 'All trades'}))
     stats_long_short = (round_trips
                         .groupby('long')[col]
-                        .agg(stats_dict)
+                        .agg(**kwargs)
                         .T
                         .rename(columns={False: 'Short trades',
                                          True: 'Long trades'}))
@@ -369,16 +369,16 @@ def gen_round_trip_stats(round_trips):
     """
 
     stats = {}
-    stats['pnl'] = agg_all_long_short(round_trips, 'pnl', PNL_STATS)
+    stats['pnl'] = agg_all_long_short(round_trips, 'pnl', **PNL_STATS)
     stats['summary'] = agg_all_long_short(round_trips, 'pnl',
-                                          SUMMARY_STATS)
+                                          **SUMMARY_STATS)
     stats['duration'] = agg_all_long_short(round_trips, 'duration',
-                                           DURATION_STATS)
+                                           **DURATION_STATS)
     stats['returns'] = agg_all_long_short(round_trips, 'returns',
-                                          RETURN_STATS)
+                                          **RETURN_STATS)
 
     stats['symbols'] = \
-        round_trips.groupby('symbol')['returns'].agg(RETURN_STATS).T
+        round_trips.groupby('symbol')['returns'].agg(**RETURN_STATS).T
 
     return stats
 
