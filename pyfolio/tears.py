@@ -414,7 +414,8 @@ def create_returns_tear_sheet(returns, positions=None,
                               bootstrap=False,
                               turnover_denom='AGB',
                               header_rows=None,
-                              return_fig=False):
+                              return_fig=False,
+                              show=False):
     """
     Generate a number of plots for analyzing a strategy's returns.
 
@@ -458,20 +459,23 @@ def create_returns_tear_sheet(returns, positions=None,
         Extra rows to display at the top of the perf stats table.
     return_fig : boolean, optional
         If True, returns the figure that was plotted on.
+    show : boolean, optional
+        If True, shows perf stats and drawdown tables in a frontend
     """
 
     if benchmark_rets is not None:
         returns = utils.clip_returns_to_benchmark(returns, benchmark_rets)
 
-    plotting.show_perf_stats(returns, benchmark_rets,
-                             positions=positions,
-                             transactions=transactions,
-                             turnover_denom=turnover_denom,
-                             bootstrap=bootstrap,
-                             live_start_date=live_start_date,
-                             header_rows=header_rows)
+    if show:
+        plotting.show_perf_stats(returns, benchmark_rets,
+                                 positions=positions,
+                                 transactions=transactions,
+                                 turnover_denom=turnover_denom,
+                                 bootstrap=bootstrap,
+                                 live_start_date=live_start_date,
+                                 header_rows=header_rows)
 
-    plotting.show_worst_drawdown_periods(returns)
+        plotting.show_worst_drawdown_periods(returns)
 
     vertical_sections = 11
 
